@@ -8,7 +8,7 @@ include::config.adoc[]
 [[overview.introduction]]
 === Introduction
 
-https://pugixml.org/[pugixml] is a light-weight C{plus}{plus} XML processing library. It consists of a DOM-like interface with rich traversal/modification capabilities, an extremely fast XML parser which constructs the DOM tree from an XML file/buffer, and an <<xpath,XPath 1.0 implementation>> for complex data-driven tree queries. Full Unicode support is also available, with <<dom.unicode,two Unicode interface variants>> and conversions between different Unicode encodings (which happen automatically during parsing/saving). The library is <<install.portability,extremely portable>> and easy to integrate and use. pugixml is developed and maintained since 2006 and has many users. All code is distributed under the <<overview.license,MIT license>>, making it completely free to use in both open-source and proprietary applications.
+http://pugixml.org/[pugixml] is a light-weight C{plus}{plus} XML processing library. It consists of a DOM-like interface with rich traversal/modification capabilities, an extremely fast XML parser which constructs the DOM tree from an XML file/buffer, and an <<xpath,XPath 1.0 implementation>> for complex data-driven tree queries. Full Unicode support is also available, with <<dom.unicode,two Unicode interface variants>> and conversions between different Unicode encodings (which happen automatically during parsing/saving). The library is <<install.portability,extremely portable>> and easy to integrate and use. pugixml is developed and maintained since 2006 and has many users. All code is distributed under the <<overview.license,MIT license>>, making it completely free to use in both open-source and proprietary applications.
 
 pugixml enables very fast, convenient and memory-efficient XML document processing. However, since pugixml has a DOM parser, it can't process XML documents that do not fit in memory; also the parser is a non-validating one, so if you need DTD or XML Schema validation, the library is not for you.
 
@@ -46,7 +46,7 @@ Thanks to *Vyacheslav Egorov* for documentation proofreading and fuzz testing.
 The pugixml library is distributed under the MIT license:
 
 ....
-Copyright (c) 2006-2019 Arseny Kapoulkine
+Copyright (c) 2006-2017 Arseny Kapoulkine
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -73,8 +73,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 This means that you can freely use pugixml in your applications, both open-source and proprietary. If you use pugixml in a product, it is sufficient to add an acknowledgment like this to the product distribution:
 
 ....
-This software is based on pugixml library (https://pugixml.org).
-pugixml is Copyright (C) 2006-2019 Arseny Kapoulkine.
+This software is based on pugixml library (http://pugixml.org).
+pugixml is Copyright (C) 2006-2017 Arseny Kapoulkine.
 ....
 
 [[install]]
@@ -148,7 +148,7 @@ The complete pugixml source consists of three files - one source file, `pugixml.
 [[install.building.embed]]
 ==== Building pugixml as a part of another static library/executable
 
-The easiest way to build pugixml is to compile the source file, `pugixml.cpp`, along with the existing library/executable. This process depends on the method of building your application; for example, if you're using Microsoft Visual Studio footnote:[All trademarks used are properties of their respective owners.], Apple Xcode, Code::Blocks or any other IDE, just *add `pugixml.cpp` to one of your projects*.
+The easiest way to build pugixml is to compile the source file, `pugixml.cpp`, along with the existing library/executable. This process depends on the method of building your application; for example, if you're using Microsoft Visual Studio footnote:[All trademarks used are properties of their respective owners.], Apple Xcode, Code::Blocks or any other IDE, just add `pugixml.cpp` to one of your projects.
 
 If you're using Microsoft Visual Studio and the project has precompiled headers turned on, you'll see the following error messages:
 
@@ -270,7 +270,7 @@ The XML document is represented with a tree data structure. The root of the tree
 [[xml_node_type]]
 The tree nodes can be of one of the following types (which together form the enumeration `xml_node_type`):
 
-* Document node ([[node_document]]`node_document`) - this is the root of the tree, which consists of several child nodes. This node corresponds to <<xml_document,xml_document>> class; note that <<xml_document,xml_document>> is a sub-class of <<xml_node,xml_node>>, so the entire node interface is also available. However, document node is special in several ways, which are covered below. There can be only one document node in the tree; document node does not have any XML representation. Document generally has one child element node (see [[xml_document::document_element]]`document_element()`), although documents parsed from XML fragments (see [[parse_fragment]]`parse_fragment`) can have more than one.
+* Document node ([[node_document]]`node_document`) - this is the root of the tree, which consists of several child nodes. This node corresponds to <<xml_document,xml_document>> class; note that <<xml_document,xml_document>> is a sub-class of <<xml_node,xml_node>>, so the entire node interface is also available. However, document node is special in several ways, which are covered below. There can be only one document node in the tree; document node does not have any XML representation.
 
 * Element/tag node ([[node_element]]`node_element`) - this is the most common type of node, which represents XML elements. Element nodes have a name, a collection of attributes and a collection of child nodes (both of which may be empty). The attribute is a simple name/value pair. The example XML representation of element nodes is as follows:
 +
@@ -380,7 +380,7 @@ There is a special value of `xml_node` type, known as null node or empty node (s
 Both `xml_node` and `xml_attribute` have the default constructor which initializes them to null objects.
 
 [[xml_attribute::comparison]][[xml_node::comparison]]
-`xml_node` and `xml_attribute` try to behave like pointers, that is, they can be compared with other objects of the same type, making it possible to use them as keys in associative containers. All handles to the same underlying object are equal, and any two handles to different underlying objects are not equal. Null handles only compare as equal to null handles. The result of relational comparison can not be reliably determined from the order of nodes in file or in any other way. Do not use relational comparison operators except for search optimization (i.e. associative container keys).
+`xml_node` and `xml_attribute` try to behave like pointers, that is, they can be compared with other objects of the same type, making it possible to use them as keys in associative containers. All handles to the same underlying object are equal, and any two handles to different underlying objects are not equal. Null handles only compare as equal to themselves. The result of relational comparison can not be reliably determined from the order of nodes in file or in any other way. Do not use relational comparison operators except for search optimization (i.e. associative container keys).
 
 [[xml_attribute::hash_value]][[xml_node::hash_value]]
 If you want to use `xml_node` or `xml_attribute` objects as keys in hash-based associative containers, you can use the `hash_value` member functions. They return the hash values that are guaranteed to be the same for all handles to the same underlying object. The hash value for null handles is 0. Note that hash value does not depend on the content of the node, only on the location of the underlying structure in memory - this means that loading the same document twice will likely produce different hash values, and copying the node will not preserve the hash.
@@ -556,7 +556,7 @@ On 32-bit architectures document structure in compact mode is typically reduced 
 
 pugixml provides several functions for loading XML data from various places - files, C{plus}{plus} iostreams, memory buffers. All functions use an extremely fast non-validating parser. This parser is not fully W3C conformant - it can load any valid XML document, but does not perform some well-formedness checks. While considerable effort is made to reject invalid XML documents, some validation is not performed for performance reasons. Also some XML transformations (i.e. EOL handling or attribute value normalization) can impact parsing speed and thus can be disabled. However for vast majority of XML documents there is no performance difference between different parsing options. Parsing options also control whether certain XML nodes are parsed; see <<loading.options>> for more information.
 
-XML data is always converted to internal character format (see <<dom.unicode>>) before parsing. pugixml supports all popular Unicode encodings (UTF-8, UTF-16 (big and little endian), UTF-32 (big and little endian); UCS-2 is naturally supported since it's a strict subset of UTF-16) as well as some non-Unicode encodings (Latin-1) and handles all encoding conversions automatically. Unless explicit encoding is specified, loading functions perform automatic encoding detection based on source XML data, so in most cases you do not have to specify document encoding. Encoding conversion is described in more detail in <<loading.encoding>>.
+XML data is always converted to internal character format (see <<dom.unicode>>) before parsing. pugixml supports all popular Unicode encodings (UTF-8, UTF-16 (big and little endian), UTF-32 (big and little endian); UCS-2 is naturally supported since it's a strict subset of UTF-16) and handles all encoding conversions automatically. Unless explicit encoding is specified, loading functions perform automatic encoding detection based on first few characters of XML data, so in almost all cases you do not have to specify document encoding. Encoding conversion is described in more detail in <<loading.encoding>>.
 
 [[loading.file]]
 === Loading document from file
@@ -749,7 +749,7 @@ These flags control the resulting tree contents:
 * [[parse_embed_pcdata]]`parse_embed_pcdata` determines if PCDATA contents is to be saved as element values. Normally element nodes have names but not values; this flag forces the parser to store the contents as a value if PCDATA is the first child of the element node (otherwise PCDATA node is created as usual). This can significantly reduce the memory required for documents with many PCDATA nodes. To retrieve the data you can use `xml_node::value()` on the element nodes or any of the higher-level functions like `child_value` or `text`. This flag is *off* by default.
 Since this flag significantly changes the DOM structure it is only recommended for parsing documents with many PCDATA nodes in memory-constrained environments. This flag is *off* by default.
 
-* [[parse_fragment]]`parse_fragment` determines if document should be treated as a fragment of a valid XML. Parsing document as a fragment leads to top-level PCDATA content (i.e. text that is not located inside a node) to be added to a tree, and additionally treats documents without element nodes as valid and permits multiple top-level element nodes. This flag is *off* by default.
+* [[parse_fragment]]`parse_fragment` determines if document should be treated as a fragment of a valid XML. Parsing document as a fragment leads to top-level PCDATA content (i.e. text that is not located inside a node) to be added to a tree, and additionally treats documents without element nodes as valid. This flag is *off* by default.
 
 CAUTION: Using in-place parsing (<<xml_document::load_buffer_inplace,load_buffer_inplace>>) with `parse_fragment` flag may result in the loss of the last character of the buffer if it is a part of PCDATA. Since PCDATA values are null-terminated strings, the only way to resolve this is to provide a null-terminated buffer as an input to `load_buffer_inplace` - i.e. `doc.load_buffer_inplace("test\0", 5, pugi::parse_default | pugi::parse_fragment)`.
 
@@ -784,9 +784,17 @@ include::samples/load_options.cpp[tags=code]
 === Encodings
 
 [[xml_encoding]]
-pugixml supports all popular Unicode encodings (UTF-8, UTF-16 (big and little endian), UTF-32 (big and little endian); UCS-2 is naturally supported since it's a strict subset of UTF-16) as well as some non-Unicode encodings (Latin-1) and handles all encoding conversions. Most loading functions accept the optional parameter `encoding`. This is a value of enumeration type `xml_encoding`, that can have the following values:
+pugixml supports all popular Unicode encodings (UTF-8, UTF-16 (big and little endian), UTF-32 (big and little endian); UCS-2 is naturally supported since it's a strict subset of UTF-16) and handles all encoding conversions. Most loading functions accept the optional parameter `encoding`. This is a value of enumeration type `xml_encoding`, that can have the following values:
 
-* [[encoding_auto]]`encoding_auto` means that pugixml will try to guess the encoding based on source XML data. The algorithm is a modified version of the one presented in http://www.w3.org/TR/REC-xml/#sec-guessing[Appendix F of XML recommendation]. It tries to find a Byte Order Mark of one of the supported encodings first; if that fails, it checks if the first few bytes of the input data look like a representation of `<` or `<?` in one of UTF-16 or UTF-32 variants; if that fails as well, encoding is assumed to be either UTF-8 or one of the non-Unicode encodings - to make the final decision the algorithm tries to parse the `encoding` attribute of the XML document declaration, ultimately falling back to UTF-8 if document declaration is not present or does not specify a supported encoding.
+* [[encoding_auto]]`encoding_auto` means that pugixml will try to guess the encoding based on source XML data. The algorithm is a modified version of the one presented in http://www.w3.org/TR/REC-xml/#sec-guessing-no-ext-info[Appendix F.1 of XML recommendation]; it tries to match the first few bytes of input data with the following patterns in strict order:
+** If first four bytes match UTF-32 BOM (Byte Order Mark), encoding is assumed to be UTF-32 with the endianness equal to that of BOM;
+** If first two bytes match UTF-16 BOM, encoding is assumed to be UTF-16 with the endianness equal to that of BOM;
+** If first three bytes match UTF-8 BOM, encoding is assumed to be UTF-8;
+** If first four bytes match UTF-32 representation of `<`, encoding is assumed to be UTF-32 with the corresponding endianness;
+** If first four bytes match UTF-16 representation of `<?`, encoding is assumed to be UTF-16 with the corresponding endianness;
+** If first two bytes match UTF-16 representation of `<`, encoding is assumed to be UTF-16 with the corresponding endianness (this guess may yield incorrect result, but it's better than UTF-8);
+** Otherwise encoding is assumed to be UTF-8.
+
 * [[encoding_utf8]]`encoding_utf8` corresponds to UTF-8 encoding as defined in the Unicode standard; UTF-8 sequences with length equal to 5 or 6 are not standard and are rejected.
 * [[encoding_utf16_le]]`encoding_utf16_le` corresponds to little-endian UTF-16 encoding as defined in the Unicode standard; surrogate pairs are supported.
 * [[encoding_utf16_be]]`encoding_utf16_be` corresponds to big-endian UTF-16 encoding as defined in the Unicode standard; surrogate pairs are supported.
@@ -811,14 +819,12 @@ There is only one non-conformant behavior when dealing with valid XML documents:
 As for rejecting invalid XML documents, there are a number of incompatibilities with W3C specification, including:
 
 * Multiple attributes of the same node can have equal names.
-* Tag and attribute names are not fully validated for consisting of allowed characters, so some invalid tags are not rejected
+* All non-ASCII characters are treated in the same way as symbols of English alphabet, so some invalid tag names are not rejected.
 * Attribute values which contain `<` are not rejected.
 * Invalid entity/character references are not rejected and are instead left as is.
 * Comment values can contain `--`.
 * XML data is not required to begin with document declaration; additionally, document declaration can appear after comments and other nodes.
 * Invalid document type declarations are silently ignored in some cases.
-* Unicode validation is not performed so invalid UTF sequences are not rejected.
-* Document can contain multiple top-level element nodes.
 
 [[access]]
 == Accessing document data
@@ -1009,13 +1015,6 @@ This is an example of using these functions (link:samples/traverse_rangefor.cpp[
 [source,indent=0]
 ----
 include::samples/traverse_rangefor.cpp[tags=code]
-----
-
-While using `children()` makes the intent of the code clear, note that each node can be treated as a container of child nodes, since it provides `begin()`/`end()` member functions described in the next section. Because of this, you can iterate through node's children simply by using the node itself:
-
-[source]
-----
-for (pugi::xml_node child: tool)
 ----
 
 [[access.iterators]]
@@ -1288,9 +1287,7 @@ bool xml_attribute::set_value(unsigned int rhs);
 bool xml_attribute::set_value(long rhs);
 bool xml_attribute::set_value(unsigned long rhs);
 bool xml_attribute::set_value(double rhs);
-bool xml_attribute::set_value(double rhs, int precision);
 bool xml_attribute::set_value(float rhs);
-bool xml_attribute::set_value(float rhs, int precision);
 bool xml_attribute::set_value(bool rhs);
 bool xml_attribute::set_value(long long rhs);
 bool xml_attribute::set_value(unsigned long long rhs);
@@ -1381,18 +1378,16 @@ include::samples/modify_add.cpp[tags=code]
 [[modify.remove]]
 === Removing nodes/attributes
 
-[[xml_node::remove_attribute]][[xml_node::remove_attributes]][[xml_node::remove_child]][[xml_node::remove_children]]
+[[xml_node::remove_attribute]][[xml_node::remove_child]]
 If you do not want your document to contain some node or attribute, you can remove it with one of the following functions:
 
 [source]
 ----
 bool xml_node::remove_attribute(const xml_attribute& a);
-bool xml_node::remove_attributes();
 bool xml_node::remove_child(const xml_node& n);
-bool xml_node::remove_children();
 ----
 
-`remove_attribute` removes the attribute from the attribute list of the node, and returns the operation result. `remove_child` removes the child node with the entire subtree (including all descendant nodes and attributes) from the document, and returns the operation result. `remove_attributes` removes all the attributes of the node, and returns the operation result. `remove_children` removes all the child nodes of the node, and returns the operation result. Removing fails if one of the following is true:
+`remove_attribute` removes the attribute from the attribute list of the node, and returns the operation result. `remove_child` removes the child node with the entire subtree (including all descendant nodes and attributes) from the document, and returns the operation result. Removing fails if one of the following is true:
 
 * The node the function is called on is null;
 * The attribute/node to be removed is null;
@@ -1442,9 +1437,7 @@ bool xml_text::set(unsigned int rhs);
 bool xml_text::set(long rhs);
 bool xml_text::set(unsigned long rhs);
 bool xml_text::set(double rhs);
-bool xml_text::set(double rhs, int precision);
 bool xml_text::set(float rhs);
-bool xml_text::set(float rhs, int precision);
 bool xml_text::set(bool rhs);
 bool xml_text::set(long long rhs);
 bool xml_text::set(unsigned long long rhs);
@@ -1710,10 +1703,6 @@ These flags control the resulting tree contents:
 * [[format_no_escapes]]`format_no_escapes` disables output escaping for attribute values and PCDATA contents. If this flag is off, special symbols (`"`, `&`, `<`, `>`) and all non-printable characters (those with codepoint values less than 32) are converted to XML escape sequences (i.e. `&amp;amp;`) during output. If this flag is on, no text processing is performed; therefore, output XML can be malformed if output contents contains invalid symbols (i.e. having a stray `<` in the PCDATA will make the output malformed). This flag is *off* by default.
 
 * [[format_no_empty_element_tags]]`format_no_empty_element_tags` determines if start/end tags should be output instead of empty element tags for empty elements (that is, elements with no children). This flag is *off* by default.
-
-* [[format_skip_control_chars]]`format_skip_control_chars` enables skipping characters belonging to range [0; 32) instead of "&#xNN;" encoding. This flag is *off* by default.
-
-* [[format_attribute_single_quote]]`format_attribute_single_quote` enables using single quotes `'` instead of double quotes `"` for enclosing attribute values. This flag is *off* by default.
 
 These flags control the additional output information:
 
@@ -2137,60 +2126,6 @@ Because of the differences in document object models, performance considerations
 == Changelog
 
 :!numbered:
-
-[[v1.10]]
-=== v1.10 ^2019-09-15^
-
-Maintenance release. Changes:
-
-* Behavior changes:
-	. Tab characters (ASCII 9) in attribute values are now encoded as '&#9;' to survive roundtripping
-	. `>` characters are no longer escaped in attribute values
-
-* New features:
-	. Add Visual Studio .natvis files to improve debugging experience
-	. CMake improvements (USE_POSTFIX and BUILD_SHARED_AND_STATIC_LIBS options for building multiple versions and pkg-config tweaks)
-	. Add format_skip_control_chars formatting flag to skip non-printable ASCII characters that are invalid to use in well-formed XML files
-	. Add format_attribute_single_quote formatting flag to use single quotes for attribute values instead of default double quotes.
-
-* XPath improvements:
-	. XPath union now results in a stable order that doesn't depend on memory allocations; crucially, this may require sorting the output of XPath query operation if you rely on the document-ordered traversal
-	. Improve performance of XPath union operation, making it ~2x faster
-
-* Compatibility improvements:
-	. Fix Visual Studio warnings when built in a DLL configuration
-	. Fix static analysis false positives in Coverity and clang
-	. Fix Wdouble-promotion warnings in gcc
-	. Add Visual Studio 2019 support for NuGet packages
-
-[[v1.9]]
-=== v1.9 ^2018-04-04^
-
-Maintenance release. Changes:
-
-* Specification changes:
-	. `xml_document::load(const char*)` (deprecated in 1.5) now has `deprecated` attribute; use `xml_document::load_string` instead
-	. `xml_node::select_single_node` (deprecated in 1.5) now has `deprecated` attribute; use `xml_node::select_node` instead
-
-* New features:
-	. Add move semantics support for xml_document and improve move semantics support for other objects
-	. CMake build now exports include directories
-	. CMake build with BUILD_SHARED_LIBS=ON now uses dllexport attribute for MSVC
-
-* XPath improvements:
-	. Rework parser/evaluator to not rely on exceptional control flow; longjmp is no longer used when exceptions are disabled
-	. Improve error messages for certain invalid expressions such as `.[1]` or `(1`
-	. Minor performance improvements
-
-* Compatibility improvements:
-	. Fix Texas Instruments compiler warnings
-	. Fix compilation issues with limits.h for some versions of gcc
-	. Fix compilation issues with Clang/C2
-	. Fix implicit fallthrough warnings in gcc 7
-	. Fix unknown attribute directive warnings in gcc 8
-	. Fix cray++ compiler errors
-	. Fix unsigned integer overflow errors with -fsanitize=integer
-	. Fix undefined behavior sanitizer issues in compact mode
 
 [[v1.8]]
 === v1.8 ^2016-11-24^
@@ -2687,7 +2622,6 @@ enum +++<a href="#xpath_value_type">xpath_value_type</a>+++
 [source,subs="+macros"]
 ----
 // Formatting options bit flags:
-const unsigned int +++<a href="#format_attribute_single_quote">format_attribute_single_quote</a>+++
 const unsigned int +++<a href="#format_default">format_default</a>+++
 const unsigned int +++<a href="#format_indent">format_indent</a>+++
 const unsigned int +++<a href="#format_indent_attributes">format_indent_attributes</a>+++
@@ -2696,7 +2630,6 @@ const unsigned int +++<a href="#format_no_empty_element_tags">format_no_empty_el
 const unsigned int +++<a href="#format_no_escapes">format_no_escapes</a>+++
 const unsigned int +++<a href="#format_raw">format_raw</a>+++
 const unsigned int +++<a href="#format_save_file_text">format_save_file_text</a>+++
-const unsigned int +++<a href="#format_skip_control_chars">format_skip_control_chars</a>+++
 const unsigned int +++<a href="#format_write_bom">format_write_bom</a>+++
 
 // Parsing options bit flags:
@@ -2875,10 +2808,8 @@ const unsigned int +++<a href="#parse_wnorm_attribute">parse_wnorm_attribute</a>
 
     bool +++<a href="#xml_node::remove_attribute">remove_attribute</a>+++(const xml_attribute& a);
     bool +++<a href="#xml_node::remove_attribute">remove_attribute</a>+++(const char_t* name);
-    bool +++<a href="#xml_node::remove_attributes">remove_attributes</a>+++();
     bool +++<a href="#xml_node::remove_child">remove_child</a>+++(const xml_node& n);
     bool +++<a href="#xml_node::remove_child">remove_child</a>+++(const char_t* name);
-    bool +++<a href="#xml_node::remove_children">remove_children</a>+++();
 
     xml_parse_result +++<a href="#xml_node::append_buffer">append_buffer</a>+++(const void* contents, size_t size, unsigned int options = parse_default, xml_encoding encoding = encoding_auto);
 

@@ -117,7 +117,7 @@ bool test_xpath_number(const pugi::xpath_node& node, const pugi::char_t* query, 
 	double value = q.evaluate_number(node);
 	double absolute_error = fabs(value - expected);
 
-	const double tolerance = 1e-15;
+	const double tolerance = 1e-15f;
 	return absolute_error < tolerance || absolute_error < fabs(expected) * tolerance;
 }
 

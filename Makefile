@@ -12,9 +12,9 @@ SOURCES=src/pugixml.cpp $(filter-out tests/fuzz_%,$(wildcard tests/*.cpp))
 EXECUTABLE=$(BUILD)/test
 
 VERSION=$(shell sed -n 's/.*version \(.*\).*/\1/p' src/pugiconfig.hpp)
-RELEASE=$(filter-out scripts/archive.py docs/%.adoc,$(shell git ls-files docs scripts src CMakeLists.txt LICENSE.md readme.txt))
+RELEASE=$(filter-out scripts/archive.py docs/%.adoc,$(shell git ls-files contrib docs scripts src CMakeLists.txt readme.txt))
 
-CXXFLAGS=-g -Wall -Wextra -Werror -pedantic -Wundef -Wshadow -Wcast-align -Wcast-qual -Wold-style-cast -Wdouble-promotion
+CXXFLAGS=-g -Wall -Wextra -Werror -pedantic -Wundef -Wshadow -Wcast-align -Wcast-qual -Wold-style-cast
 LDFLAGS=
 
 ifeq ($(config),release)
@@ -27,8 +27,13 @@ ifeq ($(config),coverage)
 endif
 
 ifeq ($(config),sanitize)
-	CXXFLAGS+=-fsanitize=address,undefined -fno-sanitize=float-divide-by-zero,float-cast-overflow -fno-sanitize-recover=all
-	LDFLAGS+=-fsanitize=address,undefined
+	CXXFLAGS+=-fsanitize=address
+	LDFLAGS+=-fsanitize=address
+
+	ifneq ($(shell uname),Darwin)
+		CXXFLAGS+=-fsanitize=undefined
+		LDFLAGS+=-fsanitize=undefined
+	endif
 endif
 
 ifeq ($(config),analyze)
@@ -58,7 +63,6 @@ test: $(EXECUTABLE)
 	./$(EXECUTABLE)
 	@gcov -b -o $(BUILD)/src/ pugixml.cpp.gcda | sed -e '/./{H;$!d;}' -e 'x;/pugixml.cpp/!d;'
 	@find . -name '*.gcov' -and -not -name 'pugixml.cpp.gcov' -exec rm {} +
-	@sed -i -e "s/#####\(.*\)\(\/\/ unreachable.*\)/    1\1\2/" pugixml.cpp.gcov
 else
 test: $(EXECUTABLE)
 	./$(EXECUTABLE)
@@ -82,9 +86,14 @@ build/pugixml-%: .FORCE | $(RELEASE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
 
-$(BUILD)/fuzz_%: tests/fuzz_%.cpp src/pugixml.cpp
+build/libFuzzer.o:
+	svn co http://llvm.org/svn/llvm-project/llvm/trunk/lib/Fuzzer build/Fuzzer
+	ls build/Fuzzer/*.cpp | xargs printf '#include "%s"\n' >build/libFuzzer.cpp
+	clang++ build/libFuzzer.cpp -c -g -O2 -fno-omit-frame-pointer -std=c++11 -I . -o build/libFuzzer.o
+
+$(BUILD)/fuzz_%: tests/fuzz_%.cpp src/pugixml.cpp build/libFuzzer.o
 	@mkdir -p $(BUILD)
-	$(CXX) $(CXXFLAGS) -fsanitize=address,fuzzer $^ -o $@
+	clang++ $(CXXFLAGS) -fsanitize=address -fsanitize-coverage=trace-pc-guard $^ -o $@
 
 $(BUILD)/%.o: %
 	@mkdir -p $(dir $@)
